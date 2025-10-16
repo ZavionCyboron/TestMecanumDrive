@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog
 import edu.wpi.first.wpilibj2.command.Subsystem
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
+import edu.wpi.first.wpilibj.MotorSafety
 
 data object DataTable {
 
@@ -109,123 +110,120 @@ object DriveSubsystem : Subsystem {
                 )
             )
 
-    private val appliedVoltage = Volts.mutable(0.0)
+/*private val appliedVoltage = Volts.mutable(0.0)
 
-    private val distance = Meters.mutable(0.0)
+private val distance = Meters.mutable(0.0)
 
-    private val velocity = MetersPerSecond.mutable(0.0)
+private val velocity = MetersPerSecond.mutable(0.0)
 
 
-    private val identificationRoutine =
-        SysIdRoutine(
-            SysIdRoutine.Config(),
-            SysIdRoutine.Mechanism(
-                // drive =
-                { voltage: Measure<VoltageUnit> ->
-                    val volts = voltage.`in`(Volts)
-                    frontleftmotor.setVoltage(volts)
-                    frontrightmotor.setVoltage(volts)
-                    rearleftmotor.setVoltage(volts)
-                    rearrightmotor.setVoltage(volts)
-                },
-                // log =
-                { log: SysIdRoutineLog ->
-                    log.motor("drive/front left")
-                        .voltage(appliedVoltage.mut_replace(frontleftmotor.get() * getBatteryVoltage(), Volts))
-                        .linearPosition(distance.mut_replace(frontleftencoder.position, Meters))
-                        .linearVelocity(velocity.mut_replace(frontleftencoder.velocity, MetersPerSecond))
+private val identificationRoutine =
+    SysIdRoutine(
+        SysIdRoutine.Config(),
+        SysIdRoutine.Mechanism(
+            // drive =
+            { voltage: Measure<VoltageUnit> ->
+                val volts = voltage.`in`(Volts)
+                frontleftmotor.setVoltage(volts)
+                frontrightmotor.setVoltage(volts)
+                rearleftmotor.setVoltage(volts)
+                rearrightmotor.setVoltage(volts)
+            },
+            // log =
+            { log: SysIdRoutineLog ->
+                log.motor("drive/front left")
+                    .voltage(appliedVoltage.mut_replace(frontleftmotor.get() * getBatteryVoltage(), Volts))
+                    .linearPosition(distance.mut_replace(frontleftencoder.position, Meters))
+                    .linearVelocity(velocity.mut_replace(frontleftencoder.velocity, MetersPerSecond))
 
-                    log.motor("drive/front right")
-                        .voltage(appliedVoltage.mut_replace(frontrightmotor.get() * getBatteryVoltage(), Volts))
-                        .linearPosition(distance.mut_replace(frontrightencoder.position, Meters))
-                        .linearVelocity(velocity.mut_replace(frontrightencoder.velocity, MetersPerSecond))
+                log.motor("drive/front right")
+                    .voltage(appliedVoltage.mut_replace(frontrightmotor.get() * getBatteryVoltage(), Volts))
+                    .linearPosition(distance.mut_replace(frontrightencoder.position, Meters))
+                    .linearVelocity(velocity.mut_replace(frontrightencoder.velocity, MetersPerSecond))
 
-                    log.motor("drive/rear left")
-                        .voltage(appliedVoltage.mut_replace(rearleftmotor.get() * getBatteryVoltage(), Volts))
-                        .linearPosition(distance.mut_replace(rearleftencoder.position, Meters))
-                        .linearVelocity(velocity.mut_replace(rearleftencoder.velocity, MetersPerSecond))
+                log.motor("drive/rear left")
+                    .voltage(appliedVoltage.mut_replace(rearleftmotor.get() * getBatteryVoltage(), Volts))
+                    .linearPosition(distance.mut_replace(rearleftencoder.position, Meters))
+                    .linearVelocity(velocity.mut_replace(rearleftencoder.velocity, MetersPerSecond))
 
-                    log.motor("drive/rear right")
-                        .voltage(appliedVoltage.mut_replace(rearrightmotor.get() * getBatteryVoltage(), Volts))
-                        .linearPosition(distance.mut_replace(rearrightencoder.position, Meters))
-                        .linearVelocity(velocity.mut_replace(rearrightencoder.velocity, MetersPerSecond))
-                },
-                // subsystem =
-                this,
-            ),
-        )
+                log.motor("drive/rear right")
+                    .voltage(appliedVoltage.mut_replace(rearrightmotor.get() * getBatteryVoltage(), Volts))
+                    .linearPosition(distance.mut_replace(rearrightencoder.position, Meters))
+                    .linearVelocity(velocity.mut_replace(rearrightencoder.velocity, MetersPerSecond))
+            },
+            // subsystem =
+            this,
+        ),
+    )*/
 
-    init {
-        rightconfig.inverted(true)
-        rearrightmotor.configure(rightconfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        frontrightmotor.configure(rightconfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+init {
+    rightconfig.inverted(false)
+    rearrightmotor.configure(rightconfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
 
-        SmartDashboard.putData("Front Left PID Controller", frontleftVelocityPIDController)
-        SmartDashboard.putData("Front Right PID Controller", frontrightVelocityPIDController)
-        SmartDashboard.putData("Rear Left PID Controller", rearleftVelocityPIDController)
-        SmartDashboard.putData("Rear Right PID Controller", rearrightVelocityPIDController)
-        SmartDashboard.putData("Front Left Encoder", frontleftencoder as Sendable?)
-        SmartDashboard.putData("Front Right Encoder", frontrightencoder as Sendable?)
-        SmartDashboard.putData("Rear Left Encoder", rearleftencoder as Sendable?)
-        SmartDashboard.putData("Rear Right Encoder", rearrightencoder as Sendable?)
-        SmartDashboard.putData("IMU", imu)
-    }
+    SmartDashboard.putData("Front Left PID Controller", frontleftVelocityPIDController)
+    SmartDashboard.putData("Front Right PID Controller", frontrightVelocityPIDController)
+    SmartDashboard.putData("Rear Left PID Controller", rearleftVelocityPIDController)
+    SmartDashboard.putData("Rear Right PID Controller", rearrightVelocityPIDController)
+    SmartDashboard.putData("IMU", imu)
+}
 
-    override fun periodic() {
-        mecanumDriveOdometry.update(
-            Rotation2d.fromDegrees(imu.angle),
-            mecanumDriveWheelPositions
-        )
+override fun periodic() {
+    mecanumDriveOdometry.update(
+        Rotation2d.fromDegrees(imu.angle),
+        mecanumDriveWheelPositions
+    )
 
-        DataTable.frontleftVoltageEntry.setDouble(frontleftmotor.busVoltage)
-        DataTable.frontrightVoltageEntry.setDouble(frontrightmotor.busVoltage)
-        DataTable.rearleftVoltageEntry.setDouble(rearleftmotor.busVoltage)
-        DataTable.rearrightVoltageEntry.setDouble(rearrightmotor.busVoltage)
+    DataTable.frontleftVoltageEntry.setDouble(frontleftmotor.busVoltage)
+    DataTable.frontrightVoltageEntry.setDouble(frontrightmotor.busVoltage)
+    DataTable.rearleftVoltageEntry.setDouble(rearleftmotor.busVoltage)
+    DataTable.rearrightVoltageEntry.setDouble(rearrightmotor.busVoltage)
 
-        DataTable.frontleftVelocityEntry.setDouble(frontleftencoder.velocity)
-        DataTable.frontrightVelocityEntry.setDouble(frontrightencoder.velocity)
-        DataTable.rearleftVelocityEntry.setDouble(rearleftencoder.velocity)
-        DataTable.rearrightVelocityEntry.setDouble(rearrightencoder.velocity)
-    }
+    DataTable.frontleftVelocityEntry.setDouble(frontleftencoder.velocity)
+    DataTable.frontrightVelocityEntry.setDouble(frontrightencoder.velocity)
+    DataTable.rearleftVelocityEntry.setDouble(rearleftencoder.velocity)
+    DataTable.rearrightVelocityEntry.setDouble(rearrightencoder.velocity)
+}
 
-    /*fun resetpose (pose: Pose2d) {
-        mecanumDriveOdometry.resetPosition(
-            rotation2d, mecanumDriveWheelPositions, pose
-        )
-    }
+/*fun resetpose (pose: Pose2d) {
+    mecanumDriveOdometry.resetPosition(
+        rotation2d, mecanumDriveWheelPositions, pose
+    )
+}
 
-    fun driverelative(relativeSpeeds: ChassisSpeeds) {
-        val wheelSpeeds = mecanumDriveKinematics.toWheelSpeeds(relativeSpeeds)
+fun driverelative(relativeSpeeds: ChassisSpeeds) {
+    val wheelSpeeds = mecanumDriveKinematics.toWheelSpeeds(relativeSpeeds)
 
-        val frontleftFed = frontleftFeedForward.calculate(wheelSpeeds.frontLeftMetersPerSecond)
-        val frontrightFed = frontrightFeedForward.calculate(wheelSpeeds.frontRightMetersPerSecond)
-        val rearleftFed = rearleftFeedForward.calculate(wheelSpeeds.rearLeftMetersPerSecond)
-        val rearrightFed = rearrightFeedForward.calculate(wheelSpeeds.rearRightMetersPerSecond)
+    val frontleftFed = frontleftFeedForward.calculate(wheelSpeeds.frontLeftMetersPerSecond)
+    val frontrightFed = frontrightFeedForward.calculate(wheelSpeeds.frontRightMetersPerSecond)
+    val rearleftFed = rearleftFeedForward.calculate(wheelSpeeds.rearLeftMetersPerSecond)
+    val rearrightFed = rearrightFeedForward.calculate(wheelSpeeds.rearRightMetersPerSecond)
 
-        val frontleftOutput = frontleftVelocityPIDController.calculate(frontleftencoder.velocity, wheelSpeeds.frontLeftMetersPerSecond)
-        val frontrightOutput = frontrightVelocityPIDController.calculate(frontrightencoder.velocity, wheelSpeeds.frontRightMetersPerSecond)
-        val rearleftOutput = rearleftVelocityPIDController.calculate(rearleftencoder.velocity, wheelSpeeds.rearLeftMetersPerSecond)
-        val rearrightOutput = rearrightVelocityPIDController.calculate(rearrightencoder.velocity, wheelSpeeds.rearRightMetersPerSecond)
+    val frontleftOutput = frontleftVelocityPIDController.calculate(frontleftencoder.velocity, wheelSpeeds.frontLeftMetersPerSecond)
+    val frontrightOutput = frontrightVelocityPIDController.calculate(frontrightencoder.velocity, wheelSpeeds.frontRightMetersPerSecond)
+    val rearleftOutput = rearleftVelocityPIDController.calculate(rearleftencoder.velocity, wheelSpeeds.rearLeftMetersPerSecond)
+    val rearrightOutput = rearrightVelocityPIDController.calculate(rearrightencoder.velocity, wheelSpeeds.rearRightMetersPerSecond)
 
-        frontleftmotor.setVoltage(frontleftFed + frontleftOutput)
-        frontrightmotor.setVoltage(frontrightFed + frontrightOutput)
-        rearleftmotor.setVoltage(rearleftFed + rearleftOutput)
-        rearrightmotor.setVoltage(rearrightFed + rearrightOutput)
-    }*/
+    frontleftmotor.setVoltage(frontleftFed + frontleftOutput)
+    frontrightmotor.setVoltage(frontrightFed + frontrightOutput)
+    rearleftmotor.setVoltage(rearleftFed + rearleftOutput)
+    rearrightmotor.setVoltage(rearrightFed + rearrightOutput)
+}*/
 
-    fun mecanumDrive(
-        xSpeed: Double,
-        ySpeed: Double,
-        zRotation: Double,
-    ){}
+fun mecanumDrive(
+    xSpeed: Double,
+    ySpeed: Double,
+    zRotation: Double,
+){
+    mecanumDrive.driveCartesian(xSpeed, ySpeed, zRotation)
+}
 
-    /*
-    // -- Characterization Commands --
-    fun getQuasistaticTestCommand(direction: SysIdRoutine.Direction): Command {
-        return identificationRoutine.quasistatic(direction)
-    }
+/*
+// -- Characterization Commands --
+fun getQuasistaticTestCommand(direction: SysIdRoutine.Direction): Command {
+    return identificationRoutine.quasistatic(direction)
+}
 
-    fun getDynamicTestCommand(direction: SysIdRoutine.Direction): Command {
-        return identificationRoutine.dynamic(direction)
-    }*/
+fun getDynamicTestCommand(direction: SysIdRoutine.Direction): Command {
+    return identificationRoutine.dynamic(direction)
+}*/
 }
